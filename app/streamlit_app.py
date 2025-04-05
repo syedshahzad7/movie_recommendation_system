@@ -19,20 +19,18 @@ with open("app/assets/style.css") as f:
 # Cache model loading, but suppress default cache message
 @st.cache_resource(show_spinner=False)
 def load_model():
-    processor = MovieDataPreprocessor(dataset_dir='dataset')
-    movies_metadata, ratings, credits, keywords = processor.load_data()
-    movies_metadata = processor.preprocess_movies(movies_metadata)
-    merged_metadata = processor.merge_metadata(movies_metadata, credits, keywords)
-    filtered_ratings = processor.filter_sparse_data(ratings)
-    filtered_ratings = filtered_ratings.sample(n=50000, random_state=42)
-    final_data = processor.merge_with_ratings(filtered_ratings, merged_metadata)
-    final_data = processor.handle_missing_values(final_data)
-    final_data = processor.generate_soup(final_data)
-    final_data = final_data.sample(n=15000, random_state=42).drop_duplicates(subset='title').reset_index(drop=True)
+    import joblib
+
+    final_data = pd.read_pickle("saved_models/final_data.pkl")
+    similarity_matrix = joblib.load("saved_models/similarity_matrix.pkl")
+    indices = joblib.load("saved_models/indices.pkl")
 
     recommender = ContentBasedRecommender(final_data)
-    recommender.train_model()
+    recommender.similarity_matrix = similarity_matrix
+    recommender.indices = indices
+
     return recommender, final_data
+
 
 # Show friendly loading spinner
 with st.spinner("🚀 Loading recommendation model..."):
