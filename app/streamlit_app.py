@@ -21,7 +21,7 @@ def load_model():
     final_data = processor.merge_with_ratings(filtered_ratings, merged_metadata)
     final_data = processor.handle_missing_values(final_data)
     final_data = processor.generate_soup(final_data)
-    final_data = final_data.sample(n=3000, random_state=42).drop_duplicates(subset='title').reset_index(drop=True)
+    final_data = final_data.sample(n=15000, random_state=42).drop_duplicates(subset='title').reset_index(drop=True)
 
     recommender = ContentBasedRecommender(final_data)
     recommender.train_model()
