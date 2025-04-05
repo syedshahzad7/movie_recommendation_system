@@ -91,7 +91,13 @@ class MovieDataPreprocessor:
             logging.info(f"Ratings successfully mapped to TMDB IDs. Shape: {ratings_with_tmdb.shape}")
 
             # Final merge with movie metadata
-            final_df = ratings_with_tmdb.merge(merged_metadata, on='id', how='inner')
+            # Select only relevant columns from metadata
+            columns_to_keep = ['id', 'title', 'genres', 'overview', 'cast', 'crew', 'keywords', 'release_date', 'runtime']
+            merged_metadata_small = merged_metadata[columns_to_keep]
+
+            # Merge only on selected columns
+            final_df = ratings_with_tmdb.merge(merged_metadata_small, on='id', how='inner')
+
             logging.info(f"Final merged dataset shape: {final_df.shape}")
             
             return final_df
@@ -111,4 +117,46 @@ class MovieDataPreprocessor:
             return df
         except Exception as e:
             raise CustomException(e, sys)
+        
+    def generate_soup(self, df):
+        try:
+            # Clean list-based columns without apply
+            def clean_list_column_manual(col):
+                cleaned = []
+                for row in col:
+                    if isinstance(row, list):
+                        cleaned.append([i.replace(" ", "").lower() for i in row])
+                    else:
+                        cleaned.append([])
+                return cleaned
+
+            df['genres'] = clean_list_column_manual(df['genres'])
+            df['keywords'] = clean_list_column_manual(df['keywords'])
+
+            # Keep top 3 cast and top 1 crew
+            df['cast'] = clean_list_column_manual(df['cast'])
+            df['cast'] = [cast[:3] for cast in df['cast']]
+
+            df['crew'] = clean_list_column_manual(df['crew'])
+            df['crew'] = [crew[:1] for crew in df['crew']]
+
+            # Build soup manually
+            soup_list = []
+            for i in range(len(df)):
+                genres = ' '.join(df.loc[i, 'genres'])
+                keywords = ' '.join(df.loc[i, 'keywords'])
+                cast = ' '.join(df.loc[i, 'cast'])
+                crew = ' '.join(df.loc[i, 'crew'])
+                overview = df.loc[i, 'overview'].lower()
+
+                soup = f"{genres} {keywords} {cast} {crew} {overview}"
+                soup_list.append(soup)
+
+            df['soup'] = soup_list
+
+            return df
+        except Exception as e:
+            raise CustomException(e, sys)
+
+
 

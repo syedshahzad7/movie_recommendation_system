@@ -1,4 +1,5 @@
 from src.data.data_preprocessing import MovieDataPreprocessor
+from src.recommender.content_based import ContentBasedRecommender
 
 if __name__ == "__main__":
     processor = MovieDataPreprocessor(dataset_dir='dataset')
@@ -15,6 +16,16 @@ if __name__ == "__main__":
     # Clean up missing values
     final_data = processor.handle_missing_values(final_data)
 
-    print("Cleaned data preview:")
-    print(final_data[['title', 'overview', 'release_date']].head())
+    # Generate soup column for content-based filtering
+    final_data = processor.generate_soup(final_data)
 
+    # Build and train recommender
+    recommender = ContentBasedRecommender(final_data)
+    recommender.train_model()
+
+    # Recommend similar movies to a given title
+    movie_title = "The Matrix"
+    recommendations = recommender.recommend(movie_title, top_n=5)
+
+    print(f"\nTop 5 movies similar to '{movie_title}':\n")
+    print(recommendations)
