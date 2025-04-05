@@ -1,18 +1,28 @@
 from tmdbv3api import TMDb, Movie
-import requests
 
 tmdb = TMDb()
-tmdb.api_key = "71ff4b710d0073a9c7a3868231901079"  
+tmdb.api_key = "71ff4b710d0073a9c7a3868231901079"
 tmdb.language = "en"
 movie_api = Movie()
 
-def get_poster_url(title):
+def get_movie_details(title):
     try:
         results = movie_api.search(title)
         if results:
-            poster_path = results[0].poster_path
-            if poster_path:
-                return f"https://image.tmdb.org/t/p/w500{poster_path}"
+            m = results[0]
+            poster_url = f"https://image.tmdb.org/t/p/w500{m.poster_path}" if m.poster_path else None
+            rating = m.vote_average
+            release_year = m.release_date.split("-")[0] if m.release_date else "N/A"
+            return {
+                "poster_url": poster_url,
+                "rating": rating,
+                "release_year": release_year
+            }
     except:
         pass
-    return None
+    return {
+        "poster_url": None,
+        "rating": "N/A",
+        "release_year": "N/A"
+    }
+
