@@ -1,6 +1,7 @@
 import streamlit as st
 from src.data.data_preprocessing import MovieDataPreprocessor
 from src.recommender.content_based import ContentBasedRecommender
+from src.utils.tmdb_utils import get_poster_url  # 👈 TMDb poster fetch
 import pandas as pd
 
 # Page config
@@ -35,8 +36,20 @@ if st.button("Get Recommendations"):
     try:
         recommendations = recommender.recommend(selected_movie, top_n=5)
         st.success(f"Top 5 movies similar to **{selected_movie}**:")
+
         for i, row in recommendations.iterrows():
-            st.markdown(f"**🎞️ {row['title']}**  \n*Genres:* {', '.join(row['genres'])}  \n{row['overview']}\n")
+            col1, col2 = st.columns([1, 4])
+            with col1:
+                poster_url = get_poster_url(row['title'])
+                if poster_url:
+                    st.image(poster_url, use_container_width=True)
+                else:
+                    st.text("No poster available")
+
+            with col2:
+                st.markdown(f"**🎞️ {row['title']}**")
+                st.markdown(f"*Genres:* {', '.join(row['genres'])}")
+                st.markdown(row['overview'])
             st.markdown("---")
     except Exception as e:
         st.error(f"Something went wrong: {e}")
