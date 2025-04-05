@@ -12,14 +12,10 @@ class ContentBasedRecommender:
 
     def train_model(self):
         try:
-            # Create vectorizer
-            vectorizer = CountVectorizer(stop_words='english')
+            vectorizer = CountVectorizer(stop_words='english', max_features=5000)
             count_matrix = vectorizer.fit_transform(self.data['soup'])
 
-            # Compute cosine similarity
             self.similarity_matrix = cosine_similarity(count_matrix, count_matrix)
-
-            # Create reverse index for title lookup
             self.indices = pd.Series(self.data.index, index=self.data['title']).drop_duplicates()
         except Exception as e:
             raise CustomException(e, sys)
@@ -27,8 +23,9 @@ class ContentBasedRecommender:
     def recommend(self, title, top_n=10):
         try:
             idx = self.indices.get(title)
-            if idx is None:
-                return []
+
+            if idx is None or isinstance(idx, (pd.Series, list)) or hasattr(idx, "__len__") and len(idx) != 1:
+                raise ValueError(f"Movie title '{title}' is ambiguous or not found in the dataset.")
 
             sim_scores = list(enumerate(self.similarity_matrix[idx]))
             sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:top_n+1]
