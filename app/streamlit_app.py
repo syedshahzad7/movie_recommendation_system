@@ -26,7 +26,7 @@ def set_background(image_path):
         unsafe_allow_html=True
     )
 
-set_background("app/assets/background.png")
+set_background("app/assets/bg.png")
 st.markdown("""
     <h1 style='font-size: 40px;'>🎬 Movie Recommender System</h1>
     <p style='font-size: 16px;'>Select a movie you like and we'll suggest similar ones!</p>
