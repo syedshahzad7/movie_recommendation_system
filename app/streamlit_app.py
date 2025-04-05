@@ -4,9 +4,29 @@ from src.recommender.content_based import ContentBasedRecommender
 from src.utils.tmdb_utils import get_movie_details
 import pandas as pd
 from string import Template
+import base64
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Movie Recommender", layout="wide")
+def set_background(image_path):
+    with open(image_path, "rb") as f:
+        encoded = base64.b64encode(f.read()).decode()
+
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("data:image/png;base64,{encoded}");
+            background-size: cover;
+            background-repeat: repeat;
+            background-attachment: fixed;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+set_background("app/assets/background.png")
 st.markdown("""
     <h1 style='font-size: 40px;'>🎬 Movie Recommender System</h1>
     <p style='font-size: 16px;'>Select a movie you like and we'll suggest similar ones!</p>
