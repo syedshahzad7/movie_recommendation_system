@@ -6,4 +6,4 @@ scikit-learn
 tmdbv3api
 joblib
 
-#-e .
+-e .
