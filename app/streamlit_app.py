@@ -86,7 +86,7 @@ if st.button("Get Recommendations"):
                         rating=details['rating'],
                         year=details['release_year'],
                         genres=genres,
-                        overview=row['overview'][:250] + '...'
+                        overview=row['overview']
                     )
                     st.markdown(html, unsafe_allow_html=True)
 
