@@ -12,7 +12,7 @@ class ContentBasedRecommender:
 
     def train_model(self):
         try:
-            vectorizer = CountVectorizer(stop_words='english', max_features=5000)
+            vectorizer = CountVectorizer(stop_words='english', max_features=2000)
             count_matrix = vectorizer.fit_transform(self.data['soup'])
 
             self.similarity_matrix = cosine_similarity(count_matrix, count_matrix)

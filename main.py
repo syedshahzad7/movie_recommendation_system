@@ -28,7 +28,7 @@ if __name__ == "__main__":
     final_data = processor.generate_soup(final_data)
 
     # ✅ Sample and cleanup
-    final_data = final_data.sample(n=15000, random_state=42).drop_duplicates(subset='title').reset_index(drop=True)
+    final_data = final_data.sample(n=5000, random_state=42).drop_duplicates(subset='title').reset_index(drop=True)
 
     # Step 7: Train recommender
     recommender = ContentBasedRecommender(final_data)
