@@ -1,6 +1,9 @@
+streamlit
 pandas
 numpy
 seaborn
-
+scikit-learn
+tmdbv3api
+joblib
 
 #-e .
