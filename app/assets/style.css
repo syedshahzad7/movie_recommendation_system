@@ -1,37 +1,85 @@
+/* Background Overlay */
+.stApp::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.4); /* semi-transparent dark overlay */
+    z-index: -1;
+}
+
+/* General App Styling */
+.stApp {
+    color: white;
+}
+
+h1, p, label, .title, .meta, .overview {
+    color: white !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.stMarkdown, .stText, .stSelectbox {
+    color: white !important;
+}
+
+/* Movie Card Styling */
 .movie-card {
-    background-color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.6); /* translucent black card */
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     padding: 20px;
     margin-bottom: 25px;
     display: flex;
     gap: 20px;
     transition: 0.2s ease;
+    color: white;
 }
+
 .movie-card:hover {
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     transform: translateY(-5px);
 }
+
 .poster {
     width: 150px;
     border-radius: 8px;
 }
+
 .details {
     flex-grow: 1;
 }
+
+.movie-card .title,
+.movie-card .meta,
+.movie-card .overview {
+    color: white !important;
+}
+
 .title {
     font-size: 22px;
     font-weight: bold;
     margin-bottom: 8px;
 }
+
 .meta {
     font-size: 14px;
-    color: #555;
+    color: #ccc;
 }
+
 .overview {
     font-size: 13px;
-    color: #333;
     margin-top: 10px;
+    color: #ddd;
+}
+
+.stButton > button div[data-testid="stMarkdownContainer"] p {
+    color: black !important;
+}
+
+
+/* Hide the white header bar completely */
+header[data-testid="stHeader"] {
+    display: none !important;
 }
 
 
